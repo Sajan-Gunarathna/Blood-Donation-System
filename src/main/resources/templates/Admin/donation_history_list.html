@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation History Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
+        header { background:#a30000; color:#fff; padding:1rem; text-align:center; font-weight:700; }
+        .container { max-width:1100px; margin:30px auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+        .actions { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; flex-wrap:wrap; }
+        .search-box input { padding:8px 10px; border:1px solid #ccc; border-radius:6px; width:220px; }
+        .search-box button { padding:8px 12px; background:#a30000; color:#fff; border:0; border-radius:6px; cursor:pointer; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th, td { padding:10px; border-bottom:1px solid #eee; text-align:left; font-size:14px; }
+        th { background:#a30000; color:#fff; font-weight:600; }
+        a.btn { background:#a30000; color:#fff; padding:6px 10px; text-decoration:none; border-radius:6px; display:inline-block; }
+        a.btn.delete { background:#6c757d; }
+        @media (max-width:768px){ .search-box input{width:140px;} th,td{font-size:13px;} }
+    </style>
+</head>
+<body>
+<header>Donation History Management</header>
+<div class="container">
+    <div class="actions">
+        <form th:action="@{/admin/donations/search}" method="get" class="search-box" style="display:flex;gap:6px;">
+
+            <input type="text" name="nic" placeholder="Search by Donor NIC" required />
+            <button type="submit">Search</button>
+        </form>
+        <div>
+            <a th:href="@{/admin/donations/new}" class="btn">Add New Donation</a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Donor Name</th>
+            <th>NIC</th>
+            <th>Date</th>
+            <th>Blood Group</th>
+            <th>Amount (ml)</th>
+            <th>Location</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="d : ${donations}">
+            <td th:text="${d.id}"></td>
+            <td th:text="${d.donor != null ? d.donor.username : d.donorName}"></td>
+            <td th:text="${d.donor != null ? d.donor.nic : d.donorNIC}"></td>
+            <td th:text="${#dates.format(d.donationDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${d.bloodGroup}"></td>
+            <td th:text="${d.amount}"></td>
+            <td th:text="${d.location}"></td>
+            <td th:text="${d.notes}"></td>
+            <td>
+                <a th:href="@{|/admin/donations/edit/${d.id}|}" class="btn">Edit</a>
+                <a th:href="@{|/admin/donations/delete/${d.id}|}" class="btn delete" onclick="return confirm('Delete this record?')">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

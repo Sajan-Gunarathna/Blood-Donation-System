@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Line - Blood Donation System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #e23d3d;
+            --secondary-red: #cb1818;
+            --light-red: #fff5f5;
+        }
+
+        .bg-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+            url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=1600');
+            background-size: cover;
+            background-position: center;
+            min-height: 600px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-red) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-red);
+            border-color: var(--primary-red);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease-in-out;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-red);
+            border-color: var(--secondary-red);
+            transform: scale(1.05);
+        }
+
+        .btn-primary::after {
+            content: "";
+            position: absolute;
+            top: -25px;
+            left: -25px;
+            right: -25px;
+            bottom: -25px;
+            border-radius: 12px;
+            background: transparent;
+            z-index: -1;
+        }
+
+        .btn-primary:hover::after {
+            box-shadow: 0 0 30px rgba(226, 61, 61, 0.7);
+        }
+
+        .feature-card {
+            border: none;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-item {
+            text-align: center;
+            padding: 2rem;
+            background: var(--light-red);
+            border-radius: 10px;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-red);
+        }
+
+        .contact-info {
+            background: var(--light-red);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--primary-red);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-heart me-2"></i>Life Line
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="btn btn-primary mx-1" th:href="@{/register}">Register Now</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary mx-1" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary mx-1" th:href="@{/#services}">Services</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="bg-hero d-flex align-items-center" id="home">
+    <div class="container text-white text-center">
+        <h1 class="display-4 fw-bold mb-4">Every Drop Counts</h1>
+        <p class="lead mb-4">Join our mission to save lives through blood donation</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a th:href="@{/login}" class="btn btn-primary btn-lg">Donate Blood</a>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <div class="stats-number">5000+</div>
+                    <div class="stats-label">Lives Saved</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <div class="stats-number">1000+</div>
+                    <div class="stats-label">Regular Donors</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <div class="stats-number">50+</div>
+                    <div class="stats-label">Blood Banks</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-item">
+                    <div class="stats-number">24/7</div>
+                    <div class="stats-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light" id="services">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Services</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-hand-holding-medical fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Blood Donation</h5>
+                        <p class="card-text">Safe and comfortable environment for blood donation with professional staff.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search-location fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Blood Bank Locator</h5>
+                        <p class="card-text">Find nearest blood banks and donation centers easily.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-ambulance fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Emergency Services</h5>
+                        <p class="card-text">24/7 emergency blood requirement assistance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5" id="contact">
+    <div class="container">
+        <h2 class="text-center mb-5">Contact Us</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="contact-info text-center h-100">
+                    <i class="fas fa-map-marker-alt contact-icon mb-3"></i>
+                    <h5>Address</h5>
+                    <p>SLIIT, New Kandy Rd, Malabe, Sri Lanka</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info text-center h-100">
+                    <i class="fas fa-phone contact-icon mb-3"></i>
+                    <h5>Phone</h5>
+                    <p>+94 76 120 3459<br>+94 74 241 1270</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info text-center h-100">
+                    <i class="fas fa-envelope contact-icon mb-3"></i>
+                    <h5>Email</h5>
+                    <p>support@lifeline.com<br>info@lifeline.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-4 bg-dark text-white">
+    <div class="container text-center">
+        <p class="mb-0">&copy; 2025 Life Line Blood Donation System. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

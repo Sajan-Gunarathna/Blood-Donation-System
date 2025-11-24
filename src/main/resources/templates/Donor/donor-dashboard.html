@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - Life Line</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #dc2626;
+            --secondary-red: #b91c1c;
+            --dark-red: #991b1b;
+            --light-red: #fef2f2;
+            --medical-blue: #1e40af;
+            --medical-green: #059669;
+            --medical-orange: #ea580c;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fef2f2 0%, #f8fafc 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #ffffff 0%, #fef2f2 100%) !important;
+            border-bottom: 3px solid var(--primary-red);
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-red) !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .brand-icon i {
+            color: white;
+            font-size: 1.5rem;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        .brand-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .brand-text {
+            line-height: 1.2;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .notification-btn {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            color: var(--primary-red) !important;
+            padding: 10px 15px;
+            border-radius: 50%;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-btn:hover {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+            border-color: var(--primary-red);
+        }
+
+        .user-profile {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            color: var(--primary-red) !important;
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+            border-color: var(--primary-red);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-red) 0%, var(--dark-red) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            color: var(--primary-red);
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .profile-section {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .profile-section h3 {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.2);
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .stats-card i {
+            color: var(--primary-red);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-card h3 {
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-card p {
+            color: var(--text-light);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .appointment-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            border-left: 4px solid var(--primary-red);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .appointment-card:hover {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+            border-right: 3px solid var(--primary-red);
+            height: 100vh;
+            position: fixed;
+            box-shadow: 4px 0 20px rgba(220, 38, 38, 0.1);
+        }
+
+        .content-area {
+            margin-left: 250px;
+            padding: 2rem;
+            background: transparent;
+        }
+
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px 12px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--medical-green) 0%, #047857 100%) !important;
+        }
+
+        .dropdown-menu {
+            border-radius: 15px;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-red);
+            color: var(--primary-red);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-red);
+        }
+
+        .section-header {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                margin-bottom: 1rem;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .stats-card h3 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-red);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-red);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <div class="brand-icon me-3">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="brand-text">
+                <div class="brand-title">Life Line</div>
+                <div class="brand-subtitle">Donor Portal</div>
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link notification-btn position-relative" href="#">-->
+<!--                        <i class="fas fa-bell"></i>-->
+<!--                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">-->
+<!--                            <span th:text="${totalAppointments}">0</span>-->
+<!--                        </span>-->
+<!--                    </a>-->
+<!--                </li>-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle user-profile d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <div class="user-avatar me-2">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name" th:text="${donor.username}">Donor Name</div>
+                            <small class="user-role">Blood Donor</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/donor/profile"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="margin-top: 70px;">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar p-3">
+            <div class="d-flex flex-column">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-circle" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 1rem;"></i>
+                    <h5 style="color: var(--primary-red); font-weight: 600;">Blood Donor</h5>
+                    <small style="color: var(--text-light);">Dashboard</small>
+                </div>
+                
+                <a href="#" class="btn btn-primary mb-3">
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                </a>
+                
+                <a href="/donor/profile" class="btn btn-outline-secondary mb-2">
+                    <i class="fas fa-user me-2"></i> Profile
+                </a>
+                
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-history me-2"></i> Donation History-->
+<!--                </a>-->
+<!--                -->
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-calendar-alt me-2"></i> My Appointments-->
+<!--                </a>-->
+<!--                -->
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-heart me-2"></i> Health Status-->
+<!--                </a>-->
+                
+                <hr style="border-color: var(--light-red); margin: 2rem 0;">
+                
+<!--                <div class="text-center">-->
+<!--                    <small style="color: var(&#45;&#45;text-light);">-->
+<!--                        <i class="fas fa-shield-alt me-1"></i>-->
+<!--                        Secure Donor Portal-->
+<!--                    </small>-->
+<!--                </div>-->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 content-area">
+            <div class="row g-4">
+                <!-- Profile Card -->
+                <div class="col-12">
+                    <div class="dashboard-card p-4 bg-white">
+                        <div class="profile-section">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 text-center">
+                                    <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--primary-red);"></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <h3 th:text="${donor.username}">Donor Name</h3>
+                                    <p class="text-muted mb-2">
+                                        <i class="fas fa-tint me-2"></i>Blood Donor
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-calendar me-2"></i>Member since 2025
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <i class="fas fa-tint fa-2x"></i>
+                        <h3>2</h3>
+                        <p class="mb-0">Total Donations</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                        <h3 th:text="${totalAppointments}">0</h3>
+                        <p class="mb-0">Upcoming Appointments</p>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments -->
+                <div class="col-12">
+                    <div class="dashboard-card p-4 bg-white">
+                        <h4 class="section-header">
+                            <i class="fas fa-calendar-alt"></i>Upcoming Appointments
+                        </h4>
+
+                        <div th:if="${#lists.isEmpty(appointments)}" class="text-center py-4">
+                            <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                            <p class="text-muted">No upcoming appointments scheduled.</p>
+                        </div>
+
+                        <div th:each="appt : ${appointments}" class="appointment-card p-4 mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar medical-icon me-2"></i>
+                                        <div>
+                                            <strong>Date:</strong><br>
+                                            <span th:text="${appt.appointmentDate}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock medical-icon me-2"></i>
+                                        <div>
+                                            <strong>Time:</strong><br>
+                                            <span th:text="${appt.timeSlot}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt medical-icon me-2"></i>
+                                        <div>
+                                            <strong>Location:</strong><br>
+                                            <span th:text="${appt.location}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Scheduled
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donation History -->
+                <div class="col-12">
+                    <div class="dashboard-card p-4 bg-white">
+                        <h4 class="section-header">
+                            <i class="fas fa-history"></i> Recent Donations
+                        </h4>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar me-1"></i>Date</th>
+                                    <th><i class="fas fa-map-marker-alt me-1"></i>Location</th>
+                                    <th><i class="fas fa-vial me-1"></i>Hemoglobin Level</th>
+                                    <th><i class="fas fa-sticky-note me-1"></i>Notes</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Dynamic donor history -->
+                                <tr th:each="d : ${donations}">
+                                    <td th:text="${#dates.format(d.donationDate, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${d.donationLocation}"></td>
+                                    <td th:text="${d.hemoglobinLevel != null ? d.hemoglobinLevel + ' g/dL' : '—'}"></td>
+                                    <td th:text="${d.notes}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Message when there are no donations -->
+                            <p class="no-data text-muted mt-2" th:if="${#lists.isEmpty(donations)}">
+                                You haven't donated blood yet.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Enhanced UX features
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add tooltips for better UX
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.dashboard-card, .stats-card, .appointment-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add loading animation to stats cards
+        const statsCards = document.querySelectorAll('.stats-card');
+        statsCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 200);
+        });
+
+        // Add pulse animation to appointment cards
+        const appointmentCards = document.querySelectorAll('.appointment-card');
+        appointmentCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.animation = 'pulse 0.6s ease-in-out';
+                setTimeout(() => {
+                    card.style.animation = '';
+                }, 600);
+            }, index * 300);
+        });
+
+        // Add notification badge animation
+        // const notificationBadge = document.querySelector('.badge');
+        // if (notificationBadge) {
+        //     setInterval(() => {
+        //         notificationBadge.style.animation = 'pulse 1s ease-in-out';
+        //         setTimeout(() => {
+        //             notificationBadge.style.animation = '';
+        //         }, 1000);
+        //     }, 5000);
+        // }
+
+        // Add form validation feedback (if any forms exist)
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                    submitBtn.disabled = true;
+                    
+                    // Re-enable after 3 seconds (in case of network issues)
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                }
+            });
+        });
+
+        // Add click animation to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add success message animation (if success message exists)
+        const successMessage = document.querySelector('.alert-success');
+        if (successMessage) {
+            successMessage.style.opacity = '0';
+            successMessage.style.transform = 'translateY(-20px)';
+            successMessage.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                successMessage.style.opacity = '1';
+                successMessage.style.transform = 'translateY(0)';
+            }, 500);
+        }
+    });
+</script>
+
+</body>
+</html>

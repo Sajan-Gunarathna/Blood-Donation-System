@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Appointment</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #dc2626;
+            --secondary-red: #b91c1c;
+            --dark-red: #991b1b;
+            --light-red: #fef2f2;
+            --medical-blue: #1e40af;
+            --medical-green: #059669;
+            --medical-orange: #ea580c;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fef2f2 0%, #f8fafc 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #ffffff 0%, #fef2f2 100%) !important;
+            border-bottom: 3px solid var(--primary-red);
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-red) !important;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+        }
+
+        .navbar-brand i {
+            color: var(--primary-red);
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-red) 0%, var(--dark-red) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+            padding: 12px 16px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+        }
+
+        .form-label {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            text-align: center;
+        }
+
+        .page-header h3 {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            margin-bottom: 0;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .form-section h5 {
+            color: var(--primary-red);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-section h5 i {
+            margin-right: 0.5rem;
+        }
+
+        .medical-icon {
+            color: var(--primary-red);
+            margin-right: 8px;
+        }
+
+        .action-buttons {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .is-invalid {
+            border-color: var(--primary-red) !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25) !important;
+        }
+
+        .is-valid {
+            border-color: var(--medical-green) !important;
+            box-shadow: 0 0 0 0.2rem rgba(5, 150, 105, 0.25) !important;
+        }
+
+        .invalid-feedback {
+            color: var(--primary-red);
+            font-weight: 500;
+        }
+
+        .valid-feedback {
+            color: var(--medical-green);
+            font-weight: 500;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-red);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-red);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-heartbeat me-2"></i>Life Line
+            <small class="d-block" style="font-size: 0.7rem; color: var(--text-light);">Edit Appointment</small>
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" th:href="@{/registration-officer/dashboard}" style="color: var(--primary-red); font-weight: 600;">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5" style="margin-top: 80px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h3>
+                    <i class="fas fa-calendar-edit me-2"></i>Edit Appointment
+                </h3>
+                <p>Update appointment details for blood donation</p>
+            </div>
+
+            <div class="card p-4">
+
+                <form th:action="@{'/appointments/update/' + ${appointment.id}}" method="post" class="needs-validation" novalidate>
+                    <!-- Donor Information Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-user me-2"></i>Donor Information</h5>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label"><i class="fas fa-user medical-icon"></i>Select Donor</label>
+                                <select class="form-select" name="donorId" required>
+                                    <option value="">Choose a donor...</option>
+                                    <option th:each="donor : ${registeredDonors}"
+                                            th:value="${donor.id}"
+                                            th:selected="${appointment.donor.id == donor.id}"
+                                            th:text="${donor.fullName + ' (' + donor.bloodGroup + ')'}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Please select a donor.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Details Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-calendar-alt me-2"></i>Appointment Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-calendar medical-icon"></i>Appointment Date</label>
+                                <input type="date" class="form-control" name="appointmentDate" th:value="${appointment.appointmentDate}" required>
+                                <div class="invalid-feedback">Please select an appointment date.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label"><i class="fas fa-clock medical-icon"></i>Time Slot</label>
+                                <select class="form-select" name="timeSlot" required>
+                                    <option value="">Select Time</option>
+                                    <option value="09:00 AM" th:selected="${appointment.timeSlot == '09:00 AM'}">09:00 AM</option>
+                                    <option value="10:00 AM" th:selected="${appointment.timeSlot == '10:00 AM'}">10:00 AM</option>
+                                    <option value="11:00 AM" th:selected="${appointment.timeSlot == '11:00 AM'}">11:00 AM</option>
+                                    <option value="12:00 PM" th:selected="${appointment.timeSlot == '12:00 PM'}">12:00 PM</option>
+                                    <option value="01:00 PM" th:selected="${appointment.timeSlot == '01:00 PM'}">01:00 PM</option>
+                                    <option value="02:00 PM" th:selected="${appointment.timeSlot == '02:00 PM'}">02:00 PM</option>
+                                    <option value="03:00 PM" th:selected="${appointment.timeSlot == '03:00 PM'}">03:00 PM</option>
+                                    <option value="04:00 PM" th:selected="${appointment.timeSlot == '04:00 PM'}">04:00 PM</option>
+                                    <option value="05:00 PM" th:selected="${appointment.timeSlot == '05:00 PM'}">05:00 PM</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a time slot.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location & Notes Section -->
+                    <div class="form-section">
+                        <h5><i class="fas fa-map-marker-alt me-2"></i>Location & Additional Information</h5>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label"><i class="fas fa-map-marker-alt medical-icon"></i>Location</label>
+                                <select class="form-select" name="location" required>
+                                    <option value="">Select Location</option>
+                                    <option value="Main Center" th:selected="${appointment.location == 'Main Center'}">Main Center</option>
+                                    <option value="City Branch" th:selected="${appointment.location == 'City Branch'}">City Branch</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a location.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label"><i class="fas fa-sticky-note medical-icon"></i>Notes</label>
+                                <textarea class="form-control" name="notes" rows="4" placeholder="Add any special notes or instructions..." th:text="${appointment.notes}"></textarea>
+                                <div class="form-text">Optional: Add any special notes or instructions for this appointment.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a th:href="@{/registration-officer/dashboard}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Appointment
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle + FontAwesome -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<script>
+    // Form validation and enhanced UX
+    (function() {
+        'use strict';
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation');
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Add loading state to submit button
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+                    submitBtn.disabled = true;
+
+                    // Re-enable after 5 seconds (in case of network issues)
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 5000);
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Real-time validation feedback
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.addEventListener('blur', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+
+            control.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                }
+            });
+        });
+
+        // Date validation - prevent past dates
+        const dateInput = document.querySelector('input[name="appointmentDate"]');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+
+            dateInput.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    this.setCustomValidity('Please select a future date');
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+        }
+
+        // Smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add tooltips for better UX
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Add custom tooltips for form elements
+        const formLabels = document.querySelectorAll('.form-label');
+        formLabels.forEach(label => {
+            const icon = label.querySelector('i');
+            if (icon) {
+                const fieldName = label.textContent.trim().replace(/^.*\s/, ''); // Get last word
+                label.setAttribute('data-bs-toggle', 'tooltip');
+                label.setAttribute('title', `Enter ${fieldName.toLowerCase()} information`);
+            }
+        });
+
+        // Auto-save functionality (optional - saves to localStorage)
+        const form = document.querySelector('.needs-validation');
+        if (form) {
+            const formData = new FormData(form);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            // Save to localStorage
+            localStorage.setItem('appointmentFormData', JSON.stringify(formObject));
+
+            // Load from localStorage on page load
+            const savedData = localStorage.getItem('appointmentFormData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.keys(parsedData).forEach(key => {
+                    const element = form.querySelector(`[name="${key}"]`);
+                    if (element && element.type !== 'submit' && element.type !== 'button') {
+                        element.value = parsedData[key];
+                    }
+                });
+            }
+        }
+
+        // Add confirmation for form submission
+        form.addEventListener('submit', function(e) {
+            const donorSelect = document.querySelector('select[name="donorId"]');
+            const selectedDonor = donorSelect.options[donorSelect.selectedIndex].text;
+            const date = document.querySelector('input[name="appointmentDate"]').value;
+            const time = document.querySelector('select[name="timeSlot"]').value;
+
+            if (!confirm(`Are you sure you want to update the appointment for ${selectedDonor} on ${date} at ${time}?`)) {
+                e.preventDefault();
+            }
+        });
+
+        // Add success animation when form is valid
+        form.addEventListener('submit', function(e) {
+            if (form.checkValidity()) {
+                const card = document.querySelector('.card');
+                card.style.animation = 'pulse 0.6s ease-in-out';
+                setTimeout(() => {
+                    card.style.animation = '';
+                }, 600);
+            }
+        });
+
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Adviser Dashboard - Life Line</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        :root {
+            --primary-red: #dc2626;
+            --secondary-red: #b91c1c;
+            --dark-red: #991b1b;
+            --light-red: #fef2f2;
+            --medical-blue: #1e40af;
+            --medical-green: #059669;
+            --medical-orange: #ea580c;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fef2f2 0%, #f8fafc 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #ffffff 0%, #fef2f2 100%) !important;
+            border-bottom: 3px solid var(--primary-red);
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-red) !important;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+        }
+
+        .navbar-brand i {
+            color: var(--primary-red);
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-red) 0%, var(--dark-red) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--medical-green) 0%, #047857 100%);
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+            border-right: 3px solid var(--primary-red);
+            height: 100vh;
+            position: fixed;
+            box-shadow: 4px 0 20px rgba(220, 38, 38, 0.1);
+        }
+
+        .content-area {
+            margin-left: 250px;
+            padding: 2rem;
+            background: transparent;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .stats-card h4 {
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-card p {
+            color: var(--text-light);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            border-bottom: 3px solid var(--light-red);
+            margin-bottom: 2rem;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-light);
+            font-weight: 600;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 25px;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-red);
+            background: var(--light-red);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-red);
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px 12px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--medical-green) 0%, #047857 100%) !important;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--secondary-red) 100%) !important;
+        }
+
+        .profile-section {
+            background: linear-gradient(135deg, var(--light-red) 0%, #fef2f2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .profile-section h3 {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-section p {
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .medical-icon {
+            color: var(--primary-red);
+            margin-right: 8px;
+        }
+
+        .dropdown-menu {
+            border-radius: 15px;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-red);
+            color: var(--primary-red);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-red);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                margin-bottom: 1rem;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .stats-card h4 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-red);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-red);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-heartbeat me-2"></i>Life Line
+            <small class="d-block" style="font-size: 0.7rem; color: var(--text-light);">Medical Adviser Portal</small>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link position-relative" href="#">
+                        <i class="fas fa-bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                            <span th:text="${pendingApprovals}">15</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown">
+                        <i class="fas fa-user-md me-2"></i>
+                        <div>
+                            <div th:text="${advisorName}" style="font-weight: 600;"></div>
+                            <small style="font-size: 0.7rem; color: var(--text-light);">Medical Adviser</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid" style="margin-top: 70px;">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar p-3">
+            <div class="d-flex flex-column">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-md" style="font-size: 3rem; color: var(--primary-red); margin-bottom: 1rem;"></i>
+                    <h5 style="color: var(--primary-red); font-weight: 600;">Medical Adviser</h5>
+                    <small style="color: var(--text-light);">Dashboard</small>
+                </div>
+                
+                <a th:href="@{/dashboard}" class="btn btn-primary mb-3">
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                </a>
+                
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-users me-2"></i> Donor Management-->
+<!--                </a>-->
+<!--                -->
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-clipboard-check me-2"></i> Medical Reviews-->
+<!--                </a>-->
+<!--                -->
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-chart-line me-2"></i> Analytics-->
+<!--                </a>-->
+<!--                -->
+<!--                <a href="#" class="btn btn-outline-secondary mb-2">-->
+<!--                    <i class="fas fa-cog me-2"></i> Settings-->
+<!--                </a>-->
+                
+                <hr style="border-color: var(--light-red); margin: 2rem 0;">
+                
+<!--                <div class="text-center">-->
+<!--                    <small style="color: var(&#45;&#45;text-light);">-->
+<!--                        <i class="fas fa-shield-alt me-1"></i>-->
+<!--                        Secure Medical Portal-->
+<!--                    </small>-->
+<!--                </div>-->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 content-area">
+            <!-- Profile Summary -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card p-4 bg-white">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="profile-section">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-user-md medical-icon" style="font-size: 2rem;"></i>
+                                        <div>
+                                            <h3 class="mb-1"><span th:text="${advisor.username}"></span></h3>
+                                            <p class="text-muted mb-1">
+                                                <i class="fas fa-briefcase-medical me-2"></i>Medical Adviser
+                                            </p>
+                                            <p class="text-muted mb-0">
+                                                <i class="fas fa-id-card me-2"></i>ID: <span th:text="${advisorId}">MA-2025-001</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="stats-card">
+                                            <i class="fas fa-clock medical-icon" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                            <h4 th:text="${pendingApprovals}">15</h4>
+                                            <p class="mb-0">Pending Approvals</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="stats-card">
+                                            <i class="fas fa-check-circle medical-icon" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--medical-green);"></i>
+                                            <h4 th:text="${TotalApprovals}">15</h4>
+                                            <p class="mb-0">Approved Donors</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donors Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="dashboard-card p-4 bg-white">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-users medical-icon" style="font-size: 2rem; margin-right: 1rem;"></i>
+                            <div>
+                                <h4 class="mb-1" style="color: var(--primary-red); font-weight: 700;">Donor Management</h4>
+                                <p class="text-muted mb-0">Review and approve donor applications</p>
+                            </div>
+                        </div>
+                        
+                        <ul class="nav nav-tabs mb-4" id="donorTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="all-tab" data-bs-toggle="tab"
+                                        data-bs-target="#all" type="button">
+                                    <i class="fas fa-list me-2"></i>All Donors
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="approved-tab" data-bs-toggle="tab"
+                                        data-bs-target="#approved" type="button">
+                                    <i class="fas fa-check-circle me-2"></i>Approved
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="rejected-tab" data-bs-toggle="tab"
+                                        data-bs-target="#rejected" type="button">
+                                    <i class="fas fa-times-circle me-2"></i>Rejected
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="donorTabsContent">
+                            <!-- All Donors Tab -->
+                            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="allDonorsTable">
+                                        <thead>
+                                        <tr>
+                                            <th><i class="fas fa-id-badge me-1"></i>ID</th>
+                                            <th><i class="fas fa-user me-1"></i>Full Name</th>
+                                            <th><i class="fas fa-credit-card me-1"></i>NIC</th>
+                                            <th><i class="fas fa-map-marker-alt me-1"></i>Address</th>
+                                            <th><i class="fas fa-tint me-1"></i>Blood Group</th>
+                                            <th><i class="fas fa-weight me-1"></i>Weight</th>
+                                            <th><i class="fas fa-plane me-1"></i>Travel History</th>
+                                            <th><i class="fas fa-birthday-cake me-1"></i>Date of Birth</th>
+                                            <th><i class="fas fa-thermometer-half me-1"></i>Recent Fever/Flu</th>
+                                            <th><i class="fas fa-pills me-1"></i>Taking Medications</th>
+                                            <th><i class="fas fa-cut me-1"></i>Recent Surgery/Tattoo</th>
+                                            <th><i class="fas fa-heartbeat me-1"></i>Chronic Conditions</th>
+                                            <th><i class="fas fa-prescription-bottle me-1"></i>Medication Details</th>
+                                            <th><i class="fas fa-clipboard-list me-1"></i>Chronic Condition Details</th>
+                                            <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="donor : ${donors}">
+                                            <td th:text="${donor.id}"></td>
+                                            <td th:text="${donor.fullName}"></td>
+                                            <td th:text="${donor.nic}"></td>
+                                            <td th:text="${donor.address}"></td>
+                                            <td th:text="${donor.bloodGroup}"></td>
+                                            <td th:text="${donor.weight}"></td>
+                                            <td th:text="${donor.travelHistory}"></td>
+                                            <td th:text="${donor.dateOfBirth}"></td>
+                                            <td th:text="${donor.hasRecentFeverOrFlu}"></td>
+                                            <td th:text="${donor.isTakingMedications}"></td>
+                                            <td th:text="${donor.hadRecentSurgeryOrTattoo}"></td>
+                                            <td th:text="${donor.hasChronicConditions}"></td>
+                                            <td th:text="${donor.medicationDetails}"></td>
+                                            <td th:text="${donor.chronicConditionDetails}"></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <a th:if="${!donor.isApproved and !donor.isRejected}"
+                                                       th:href="@{'/medical-adviser/donors/approve/' + ${donor.id}}"
+                                                       class="btn btn-sm btn-success">
+                                                        <i class="fas fa-check me-1"></i>Approve
+                                                    </a>
+
+                                                    <a th:if="${!donor.isApproved and !donor.isRejected}"
+                                                       th:href="@{'/medical-adviser/donors/reject/' + ${donor.id}}"
+                                                       class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-times me-1"></i>Reject
+                                                    </a>
+
+                                                    <!-- Show badge if approved -->
+                                                    <span th:if="${donor.isApproved}" class="badge bg-success">
+                                                        <i class="fas fa-check-circle me-1"></i>Approved
+                                                    </span>
+
+                                                    <!-- Show badge if rejected -->
+                                                    <span th:if="${donor.isRejected}" class="badge bg-danger">
+                                                        <i class="fas fa-times-circle me-1"></i>Rejected
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Approved Tab -->
+                            <div class="tab-pane fade" id="approved" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="approvedDonorsTable">
+                                        <thead>
+                                        <tr>
+                                            <th><i class="fas fa-id-badge me-1"></i>ID</th>
+                                            <th><i class="fas fa-user me-1"></i>Full Name</th>
+                                            <th><i class="fas fa-credit-card me-1"></i>NIC</th>
+                                            <th><i class="fas fa-map-marker-alt me-1"></i>Address</th>
+                                            <th><i class="fas fa-tint me-1"></i>Blood Group</th>
+                                            <th><i class="fas fa-weight me-1"></i>Weight</th>
+                                            <th><i class="fas fa-plane me-1"></i>Travel History</th>
+                                            <th><i class="fas fa-birthday-cake me-1"></i>Date of Birth</th>
+                                            <th><i class="fas fa-thermometer-half me-1"></i>Recent Fever/Flu</th>
+                                            <th><i class="fas fa-pills me-1"></i>Taking Medications</th>
+                                            <th><i class="fas fa-cut me-1"></i>Recent Surgery/Tattoo</th>
+                                            <th><i class="fas fa-heartbeat me-1"></i>Chronic Conditions</th>
+                                            <th><i class="fas fa-prescription-bottle me-1"></i>Medication Details</th>
+                                            <th><i class="fas fa-clipboard-list me-1"></i>Chronic Condition Details</th>
+                                            <th><i class="fas fa-check-circle me-1"></i>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="donor : ${donors}" th:if="${donor.isApproved}">
+                                            <td th:text="${donor.id}"></td>
+                                            <td th:text="${donor.fullName}"></td>
+                                            <td th:text="${donor.nic}"></td>
+                                            <td th:text="${donor.address}"></td>
+                                            <td th:text="${donor.bloodGroup}"></td>
+                                            <td th:text="${donor.weight}"></td>
+                                            <td th:text="${donor.travelHistory}"></td>
+                                            <td th:text="${donor.dateOfBirth}"></td>
+                                            <td th:text="${donor.hasRecentFeverOrFlu}"></td>
+                                            <td th:text="${donor.isTakingMedications}"></td>
+                                            <td th:text="${donor.hadRecentSurgeryOrTattoo}"></td>
+                                            <td th:text="${donor.hasChronicConditions}"></td>
+                                            <td th:text="${donor.medicationDetails}"></td>
+                                            <td th:text="${donor.chronicConditionDetails}"></td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Approved
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Rejected Tab -->
+                            <div class="tab-pane fade" id="rejected" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="rejectedDonorsTable">
+                                        <thead>
+                                        <tr>
+                                            <th><i class="fas fa-id-badge me-1"></i>ID</th>
+                                            <th><i class="fas fa-user me-1"></i>Full Name</th>
+                                            <th><i class="fas fa-credit-card me-1"></i>NIC</th>
+                                            <th><i class="fas fa-map-marker-alt me-1"></i>Address</th>
+                                            <th><i class="fas fa-tint me-1"></i>Blood Group</th>
+                                            <th><i class="fas fa-weight me-1"></i>Weight</th>
+                                            <th><i class="fas fa-plane me-1"></i>Travel History</th>
+                                            <th><i class="fas fa-birthday-cake me-1"></i>Date of Birth</th>
+                                            <th><i class="fas fa-thermometer-half me-1"></i>Recent Fever/Flu</th>
+                                            <th><i class="fas fa-pills me-1"></i>Taking Medications</th>
+                                            <th><i class="fas fa-cut me-1"></i>Recent Surgery/Tattoo</th>
+                                            <th><i class="fas fa-heartbeat me-1"></i>Chronic Conditions</th>
+                                            <th><i class="fas fa-prescription-bottle me-1"></i>Medication Details</th>
+                                            <th><i class="fas fa-clipboard-list me-1"></i>Chronic Condition Details</th>
+                                            <th><i class="fas fa-times-circle me-1"></i>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="donor : ${donors}" th:if="${donor.isRejected}">
+                                            <td th:text="${donor.id}"></td>
+                                            <td th:text="${donor.fullName}"></td>
+                                            <td th:text="${donor.nic}"></td>
+                                            <td th:text="${donor.address}"></td>
+                                            <td th:text="${donor.bloodGroup}"></td>
+                                            <td th:text="${donor.weight}"></td>
+                                            <td th:text="${donor.travelHistory}"></td>
+                                            <td th:text="${donor.dateOfBirth}"></td>
+                                            <td th:text="${donor.hasRecentFeverOrFlu}"></td>
+                                            <td th:text="${donor.isTakingMedications}"></td>
+                                            <td th:text="${donor.hadRecentSurgeryOrTattoo}"></td>
+                                            <td th:text="${donor.hasChronicConditions}"></td>
+                                            <td th:text="${donor.medicationDetails}"></td>
+                                            <td th:text="${donor.chronicConditionDetails}"></td>
+                                            <td>
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times-circle me-1"></i>Rejected
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTables for all tables
+        $('#allDonorsTable').DataTable({
+            "pageLength": 10,
+            "searching": true,
+            "ordering": true,
+            "language": {
+                "search": "Search donors:",
+                "lengthMenu": "Show _MENU_ donors per page",
+                "info": "Showing _START_ to _END_ of _TOTAL_ donors",
+                "infoEmpty": "No donors found",
+                "infoFiltered": "(filtered from _MAX_ total donors)"
+            },
+            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                   '<"row"<"col-sm-12"tr>>' +
+                   '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
+        });
+
+        $('#approvedDonorsTable').DataTable({
+            "pageLength": 10,
+            "searching": true,
+            "ordering": true,
+            "language": {
+                "search": "Search approved donors:",
+                "lengthMenu": "Show _MENU_ donors per page",
+                "info": "Showing _START_ to _END_ of _TOTAL_ approved donors",
+                "infoEmpty": "No approved donors found",
+                "infoFiltered": "(filtered from _MAX_ total approved donors)"
+            }
+        });
+
+        $('#rejectedDonorsTable').DataTable({
+            "pageLength": 10,
+            "searching": true,
+            "ordering": true,
+            "language": {
+                "search": "Search rejected donors:",
+                "lengthMenu": "Show _MENU_ donors per page",
+                "info": "Showing _START_ to _END_ of _TOTAL_ rejected donors",
+                "infoEmpty": "No rejected donors found",
+                "infoFiltered": "(filtered from _MAX_ total rejected donors)"
+            }
+        });
+
+        // Add smooth scrolling for better UX
+        $('a[href^="#"]').on('click', function(event) {
+            var target = $(this.getAttribute('href'));
+            if( target.length ) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top - 100
+                }, 1000);
+            }
+        });
+
+        // Add confirmation for approve/reject actions
+        $('.btn-success, .btn-danger').on('click', function(e) {
+            var action = $(this).hasClass('btn-success') ? 'approve' : 'reject';
+            var donorName = $(this).closest('tr').find('td:nth-child(2)').text();
+            
+            if (!confirm(`Are you sure you want to ${action} donor "${donorName}"?`)) {
+                e.preventDefault();
+            }
+        });
+
+        // Add loading states for buttons
+        $('.btn-success, .btn-danger').on('click', function() {
+            var $btn = $(this);
+            var originalText = $btn.html();
+            
+            $btn.html('<i class="fas fa-spinner fa-spin me-1"></i>Processing...');
+            $btn.prop('disabled', true);
+            
+            // Re-enable after 3 seconds (in case of network issues)
+            setTimeout(function() {
+                $btn.html(originalText);
+                $btn.prop('disabled', false);
+            }, 3000);
+        });
+
+        // Add tooltips for better UX
+        $('[data-bs-toggle="tooltip"]').tooltip();
+        
+        // Add custom tooltips for action buttons
+        $('.btn-success').attr('data-bs-toggle', 'tooltip').attr('title', 'Approve this donor for blood donation');
+        $('.btn-danger').attr('data-bs-toggle', 'tooltip').attr('title', 'Reject this donor application');
+    });
+</script>
+
+</body>
+</html>
